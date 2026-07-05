@@ -1,5 +1,5 @@
 mod input;
-use std::vec;
+use std::{mem::transmute, vec};
 
 #[derive(Clone)]
 struct Chip {
@@ -28,33 +28,74 @@ fn main() {
         } print!("\n");
     }
 
-    fn get_lowest_chip_in_colum (colum: i32, board: &Vec<Chip>) -> usize {
+    fn get_lowest_chip_in_colum (colum: &i32, board: &Vec<Chip>) -> usize {
         
-        let mut current_chip = colum as usize -1;
+        // check for 0
+        if colum < &1 {return 42;}
 
-        // add until at bottom
+        let mut current_chip = colum.clone() as usize -1;
+
+        // check for out of bounds or full colum
+        if current_chip > 41 || board[current_chip].exists {
+            return 42;
+        }
+
+        // add until at next chip exists and return
         while (current_chip as i8) < 35 && !board[current_chip+7].exists {current_chip+=7;}
         return current_chip;
     }
-    
+
+    fn check_for_wins (current_player: &usize, last_chip: &usize, board: &Vec<Chip>, scoreboard: &mut (i8,i8)) -> bool {
+
+        let mut is_win: bool = false;
+        let mut streak: [i8; 4] = [0,0,0,0];
+
+        for i in 0..7 as usize { //check for wins
+            if i == 3 {continue;}
+
+            //check for out of bounds and increase streak
+            if !(last_chip+i < 3|| last_chip+i-3 > 41) {if board[last_chip+i-3].player == current_player.clone() {streak[0]+=1;} else {streak[0] = 0}}
+            
+            if !(last_chip+i*7 < 21 || last_chip+i*7-21 > 41) {if board[last_chip+i*7-21].player == current_player.clone() {streak[1]+=1;} else {streak[1] = 0}}
+
+            if !(last_chip+i*8 < 24 || last_chip+i*8-24 > 41) {if board[last_chip+i*8-24].player == current_player.clone() {streak[2]+=1;} else {streak[2] = 0}}
+
+            if !(last_chip+i*6 < 18 || last_chip+i*6-18 > 41) {if board[last_chip+i*6-18].player == current_player.clone() {streak[3]+=1;} else {streak[3] = 0}}
+
+            // check if someone won
+            for i in 0..4 {
+                if streak[i] == 3 {is_win = true;}
+            }
+        }
+
+        // check if there is a win, then check if its player 1, then add 1 to their score, else add 1 to player 2's score
+        if is_win {if current_player == &0 {scoreboard.0 += 1} else {scoreboard.1 +=1}}
+        return is_win;
+    }
+
     // game loop
+    let mut current_player: usize = 1;
 
-    loop  {
-        let mut current_player: usize = 1;
-        let mut selected_colum: i32 = 0;
+    loop {
+        let mut selected_colum: i32 = 43;
 
-        show_board(&board);
-        
-        // pasta code; TODO: add spaghetti
-        while selected_colum != 1 && selected_colum != 2 && selected_colum != 3 && selected_colum != 4 && selected_colum != 5 && selected_colum != 6 && selected_colum != 7 {
+        while !matches!(&selected_colum, 1..8) || get_lowest_chip_in_colum(&selected_colum, &board) == 42{
+            show_board(&board);
             
             println!("Input colum: [1-7]");
             selected_colum = input::get_int();
+
+            if !matches!(&selected_colum, 1..8) {println!("Please choose a vailid colum!");}
+            else if get_lowest_chip_in_colum(&selected_colum, &board) == 42 {println!("This colum is full!");}
         }
-        
-        let thrown_chip = get_lowest_chip_in_colum(selected_colum, &board);
+            
+        let thrown_chip = get_lowest_chip_in_colum(&selected_colum, &board);
 
         board[thrown_chip].exists = true;
         board[thrown_chip].player = current_player.clone();
+
+        if check_for_wins(&current_player, &thrown_chip, &board, &mut scoreboard) {println!("Someone WINS!")}
+
+        if current_player == 1 {current_player = 2} else {current_player = 1}
     }
 }

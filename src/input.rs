@@ -10,7 +10,7 @@ pub fn get_int() -> i32 {
 
         io::stdin().read_line(&mut input).expect("Failed");
 
-        input = input.to_lowercase().replace(&['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z','!', '"', '§', '$', '%', '&', '/', '(', ')', '=', '?', '{', '[', ']', '}', ' ', '+', '*', '#', '\u{0027}', '~',',',';','.',':','_','@'], "");
+        input = input.to_lowercase().replace(&['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z','!', '"', '§', '$', '%', '&', '/', '(', ')', '=', '?', '{', '[', ']', '}', ' ', '+', '-', '*', '#', '\u{0027}', '~',',',';','.',':','_','@', '^'], "");
         
         if input.trim() == "" {
         
@@ -18,7 +18,7 @@ pub fn get_int() -> i32 {
         
         } else {
 
-            input32 = input.trim().parse::<i32>().unwrap();
+            input32 = input.replace('-', "").trim().parse::<i32>().unwrap();
             running = false
         }
     }
