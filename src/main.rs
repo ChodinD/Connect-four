@@ -79,6 +79,8 @@ fn main() {
     loop {
         let mut selected_colum: i32 = 43;
 
+        println!("Scores:\n{} : {}", scoreboard.0 ,scoreboard.1);
+
         while !matches!(&selected_colum, 1..8) || get_lowest_chip_in_colum(&selected_colum, &board) == 42{
             show_board(&board);
             
@@ -94,7 +96,11 @@ fn main() {
         board[thrown_chip].exists = true;
         board[thrown_chip].player = current_player.clone();
 
-        if check_for_wins(&current_player, &thrown_chip, &board, &mut scoreboard) {println!("Player {} wins!",&current_player)}
+        if check_for_wins(&current_player, &thrown_chip, &board, &mut scoreboard) {
+            println!("Player {} wins!",&current_player);
+            current_player = 2; // set player to 2 to have it set to 1 laters
+            board = vec![Chip {exists: false, player: 0}; 42];
+        }
 
         if current_player == 1 {current_player = 2} else {current_player = 1}
     }
