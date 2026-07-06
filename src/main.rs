@@ -1,5 +1,5 @@
 mod input;
-use std::{mem::transmute, vec};
+use std::{vec};
 
 #[derive(Clone)]
 struct Chip {
@@ -54,13 +54,13 @@ fn main() {
             if i == 3 {continue;}
 
             //check for out of bounds and increase streak
-            if !(last_chip+i < 3|| last_chip+i-3 > 41) {if board[last_chip+i-3].player == current_player.clone() {streak[0]+=1;} else {streak[0] = 0}}
+            if !(last_chip % 7+i < 3|| last_chip % 7+i-3 > 6) {if board[last_chip+i-3].player == current_player.clone() {streak[0]+=1;} else {streak[0] = 0}}
             
             if !(last_chip+i*7 < 21 || last_chip+i*7-21 > 41) {if board[last_chip+i*7-21].player == current_player.clone() {streak[1]+=1;} else {streak[1] = 0}}
 
-            if !(last_chip+i*8 < 24 || last_chip+i*8-24 > 41) {if board[last_chip+i*8-24].player == current_player.clone() {streak[2]+=1;} else {streak[2] = 0}}
+            if !(last_chip+i*8 < 24 || last_chip+i*8-24 > 41) && (last_chip+i*8-24)/7+3 == (last_chip/7)+i {if board[last_chip+i*8-24].player == current_player.clone() {streak[2]+=1;} else {streak[2] = 0}}
 
-            if !(last_chip+i*6 < 18 || last_chip+i*6-18 > 41) {if board[last_chip+i*6-18].player == current_player.clone() {streak[3]+=1;} else {streak[3] = 0}}
+            if !(last_chip+i*6 < 18 || last_chip+i*6-18 > 41) && (last_chip+i*6-18)/7+3 == (last_chip/7)+i {if board[last_chip+i*6-18].player == current_player.clone() {streak[3]+=1;} else {streak[3] = 0}}
 
             // check if someone won
             for i in 0..4 {
@@ -69,7 +69,7 @@ fn main() {
         }
 
         // check if there is a win, then check if its player 1, then add 1 to their score, else add 1 to player 2's score
-        if is_win {if current_player == &0 {scoreboard.0 += 1} else {scoreboard.1 +=1}}
+        if is_win {if current_player == &1 {scoreboard.0 += 1} else {scoreboard.1 +=1}}
         return is_win;
     }
 
@@ -94,7 +94,7 @@ fn main() {
         board[thrown_chip].exists = true;
         board[thrown_chip].player = current_player.clone();
 
-        if check_for_wins(&current_player, &thrown_chip, &board, &mut scoreboard) {println!("Someone WINS!")}
+        if check_for_wins(&current_player, &thrown_chip, &board, &mut scoreboard) {println!("Player {} wins!",&current_player)}
 
         if current_player == 1 {current_player = 2} else {current_player = 1}
     }

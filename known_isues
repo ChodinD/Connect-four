@@ -1,1 +1,2 @@
-win checks trigger over different rows due to the board beeing a array
+FB-1: win checks trigger over different rows due to the board beeing a array
+    fixed by checking if chip is in the right row.
