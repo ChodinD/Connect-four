@@ -13,7 +13,7 @@ fn main() {
 
     fn show_board (board: &Vec<Chip>) {
 
-        let chip_render = vec![' ','X','O'];
+        let chip_render = vec![" ","\x1b[94mX\x1b[0m","\x1b[91m0\x1b[0m"];
 
         for y in 0..6 {
             for x in 0..7 {
@@ -103,7 +103,7 @@ fn main() {
     loop {
         let mut selected_colum: i32 = 43;
 
-        println!("Scores:\n{} : {}", scoreboard.0 ,scoreboard.1);
+        println!("Scores:\n\x1b[94m{}\x1b[0m : \x1b[91m{}\x1b[0m", scoreboard.0 ,scoreboard.1);
 
         while !matches!(&selected_colum, 1..8) || get_lowest_chip_in_colum(&selected_colum, &board) == 42{
             show_board(&board);
