@@ -1,5 +1,4 @@
-mod input;
-use std::{vec};
+use std::{vec, io};
 
 #[derive(Clone)]
 struct Chip {
@@ -73,6 +72,31 @@ fn main() {
         return is_win;
     }
 
+    fn get_int () -> i32 {
+    
+    let mut input: String = "".to_string();
+    let mut running: bool = true;
+    let mut input32: i32 = 0;
+
+    while running {
+
+        io::stdin().read_line(&mut input).expect("Failed");
+
+        input = input.to_lowercase().replace(&['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z','!', '"', '§', '$', '%', '&', '/', '(', ')', '=', '?', '{', '[', ']', '}', ' ', '+', '-', '*', '#', '\u{0027}', '~',',',';','.',':','_','@', '^'], "");
+        
+        if input.trim() == "" {
+        
+            println!("Please input a number!");
+        
+        } else {
+
+            input32 = input.replace('-', "").trim().parse::<i32>().unwrap();
+            running = false
+        }
+    }
+    return input32;
+    }
+    
     // game loop
     let mut current_player: usize = 1;
 
@@ -85,7 +109,7 @@ fn main() {
             show_board(&board);
             
             println!("Input colum: [1-7]");
-            selected_colum = input::get_int();
+            selected_colum = get_int();
 
             if !matches!(&selected_colum, 1..8) {println!("Please choose a vailid colum!");}
             else if get_lowest_chip_in_colum(&selected_colum, &board) == 42 {println!("This colum is full!");}
