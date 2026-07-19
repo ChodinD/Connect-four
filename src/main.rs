@@ -123,6 +123,10 @@ fn main() {
         if check_for_wins(&current_player, &thrown_chip, &board, &mut scoreboard) {
             println!("Player {} wins!",&current_player);
             current_player = 2; // set player to 2 to have it set to 1 laters
+            show_board(&board);
+            let mut temp: String = "".to_string();
+            println!("Press Enter to continue.");
+            io::stdin().read_line(&mut temp).expect("Failed");
             board = vec![Chip {exists: false, player: 0}; 42];
         }
 
